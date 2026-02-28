@@ -12,6 +12,7 @@ export default defineConfig({
         './Theme': './src/theme/Theme.tsx',
         './Button': './src/components/Button/Button.tsx',
         './Input': './src/components/Input/Input.tsx',
+        './NotificationContext': './src/index.ts',
       },
       shared: {
         react: { singleton: true, requiredVersion: '^19.0.0' },
