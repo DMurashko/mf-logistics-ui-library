@@ -1,54 +1,43 @@
-/// <reference types="vitest/config" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import federation from '@originjs/vite-plugin-federation';
+import { federation } from '@module-federation/vite';
 
-// https://vite.dev/config/
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
-import { playwright } from '@vitest/browser-playwright';
-const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
-
-// More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
-  plugins: [react(), federation({
-    name: 'ui_library',
-    filename: 'remoteEntry.js',
-    exposes: {
-      './Theme': './src/theme/Theme.tsx',
-      './Button': './src/components/Button/Button.tsx',
-      './Input': './src/components/Input/Input.tsx'
-    },
-    shared: ['react', 'react-dom', '@mui/material', '@emotion/react', '@emotion/styled']
-  })],
-  build: {
-    modulePreload: false,
-    target: 'esnext',
-    minify: false,
-    cssCodeSplit: false
+  plugins: [
+    federation({
+      name: 'ui_library',
+      filename: 'remoteEntry.js',
+      dts: false,
+      exposes: {
+        './Theme': './src/theme/Theme.tsx',
+        './Button': './src/components/Button/Button.tsx',
+        './Input': './src/components/Input/Input.tsx',
+      },
+      shared: {
+        react: { singleton: true, requiredVersion: '^19.0.0' },
+        'react-dom': { singleton: true, requiredVersion: '^19.0.0' },
+        'react/jsx-runtime': { singleton: true, requiredVersion: '^19.0.0' },
+        'react/jsx-dev-runtime': { singleton: true, requiredVersion: '^19.0.0' },
+        '@mui/material': { singleton: true },
+        '@emotion/react': { singleton: true },
+        '@emotion/styled': { singleton: true },
+      },
+    }),
+    react(),
+  ],
+  server: {
+    port: 3003,
+    strictPort: true,
+    origin: 'http://localhost:3003',
   },
-  test: {
-    projects: [{
-      extends: true,
-      plugins: [
-      // The plugin will run tests for the stories defined in your Storybook config
-      // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
-      storybookTest({
-        configDir: path.join(dirname, '.storybook')
-      })],
-      test: {
-        name: 'storybook',
-        browser: {
-          enabled: true,
-          headless: true,
-          provider: playwright({}),
-          instances: [{
-            browser: 'chromium'
-          }]
-        },
-        setupFiles: ['.storybook/vitest.setup.ts']
-      }
-    }]
-  }
+  preview: {
+    port: 3003,
+    strictPort: true,
+  },
+  build: {
+    target: 'esnext',
+    modulePreload: false,
+    minify: false,
+    cssCodeSplit: false,
+  },
 });
