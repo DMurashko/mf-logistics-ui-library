@@ -2,31 +2,38 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { federation } from '@module-federation/vite';
 
+const isStorybook = process.argv[1]?.includes('storybook');
+
 export default defineConfig({
   plugins: [
-    federation({
-      name: 'ui_library',
-      filename: 'remoteEntry.js',
-      dts: false,
-      exposes: {
-        './Theme': './src/theme/Theme.tsx',
-        './Button': './src/components/Button/Button.tsx',
-        './Input': './src/components/Input/Input.tsx',
-        './NotificationContext': './src/index.ts',
-        './Header': './src/components/Header/Header.tsx',
-        './DataGrid': './src/components/DataGrid/DataGrid.tsx',
-      },
-      shared: {
-        react: { singleton: true, requiredVersion: '^19.0.0' },
-        'react-dom': { singleton: true, requiredVersion: '^19.0.0' },
-        'react/jsx-runtime': { singleton: true, requiredVersion: '^19.0.0' },
-        'react/jsx-dev-runtime': { singleton: true, requiredVersion: '^19.0.0' },
-        '@mui/material': { singleton: true },
-        '@emotion/react': { singleton: true },
-        '@emotion/styled': { singleton: true },
-        '@mui/x-data-grid': { singleton: true },
-      },
-    }),
+    ...(!isStorybook
+      ? [
+          federation({
+            name: 'ui_library',
+            filename: 'remoteEntry.js',
+            dts: false,
+            exposes: {
+              './Theme': './src/theme/Theme.tsx',
+              './Button': './src/components/Button/Button.tsx',
+              './Input': './src/components/Input/Input.tsx',
+              './NotificationContext': './src/index.ts',
+              './Header': './src/components/Header/Header.tsx',
+              './DataGrid': './src/components/DataGrid/DataGrid.tsx',
+            },
+            shared: {
+              react: { singleton: true, requiredVersion: '^19.0.0' },
+              'react-dom': { singleton: true, requiredVersion: '^19.0.0' },
+              'react/jsx-runtime': { singleton: true, requiredVersion: '^19.0.0' },
+              'react/jsx-dev-runtime': { singleton: true, requiredVersion: '^19.0.0' },
+              '@mui/material': { singleton: true },
+              '@emotion/react': { singleton: true },
+              '@emotion/styled': { singleton: true },
+              '@mui/x-data-grid': { singleton: true },
+              axios: { singleton: true },
+            },
+          }),
+        ]
+      : []),
     react(),
   ],
   server: {
