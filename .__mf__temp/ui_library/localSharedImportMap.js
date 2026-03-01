@@ -19,6 +19,11 @@
             return pkg;
         }
       ,
+        "@mui/x-data-grid": async () => {
+          let pkg = await import("__mf__virtual/ui_library__prebuild___mf_0_mui_mf_1_x_mf_2_data_mf_2_grid__prebuild__.js");
+            return pkg;
+        }
+      ,
         "react": async () => {
           let pkg = await import("__mf__virtual/ui_library__prebuild__react__prebuild__.js");
             return pkg;
@@ -123,6 +128,36 @@
             shareConfig: {
               singleton: true,
               requiredVersion: "^7.3.8",
+              
+            }
+          }
+        ,
+          "@mui/x-data-grid": {
+            name: "@mui/x-data-grid",
+            version: "8.27.3",
+            scope: ["default"],
+            loaded: false,
+            from: "ui_library",
+            async get () {
+              if (false) {
+                throw new Error(`Shared module '${"@mui/x-data-grid"}' must be provided by host`);
+              }
+              usedShared["@mui/x-data-grid"].loaded = true
+              const {"@mui/x-data-grid": pkgDynamicImport} = importMap
+              const res = await pkgDynamicImport()
+              const exportModule = {...res}
+              // All npm packages pre-built by vite will be converted to esm
+              Object.defineProperty(exportModule, "__esModule", {
+                value: true,
+                enumerable: false
+              })
+              return function () {
+                return exportModule
+              }
+            },
+            shareConfig: {
+              singleton: true,
+              requiredVersion: "^8.27.3",
               
             }
           }

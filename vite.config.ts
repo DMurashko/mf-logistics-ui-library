@@ -13,6 +13,8 @@ export default defineConfig({
         './Button': './src/components/Button/Button.tsx',
         './Input': './src/components/Input/Input.tsx',
         './NotificationContext': './src/index.ts',
+        './Header': './src/components/Header/Header.tsx',
+        './DataGrid': './src/components/DataGrid/DataGrid.tsx',
       },
       shared: {
         react: { singleton: true, requiredVersion: '^19.0.0' },
@@ -22,6 +24,7 @@ export default defineConfig({
         '@mui/material': { singleton: true },
         '@emotion/react': { singleton: true },
         '@emotion/styled': { singleton: true },
+        '@mui/x-data-grid': { singleton: true },
       },
     }),
     react(),
